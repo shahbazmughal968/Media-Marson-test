@@ -58,10 +58,10 @@ export default function Header({ collapsed, onMenuClick }) {
 
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="h6" sx={{ fontWeight: 900, letterSpacing: -0.2 }} noWrap>
-              Ciao, Dr. Luca!
+              Media and Marson
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-              Inizia la giornata con un nuovo corso!
+             Welcome to Test
             </Typography>
           </Box>
         </Box>
