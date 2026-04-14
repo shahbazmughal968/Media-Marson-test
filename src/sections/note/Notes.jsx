@@ -63,7 +63,6 @@ export default function Notes() {
       await addNote(valid).unwrap();
       setOpen(false);
       setValues({ title: "", body: "" });
-      // Notes list auto-refetches via invalidatesTags, but this makes it immediate.
       refetch();
     } catch (e) {
       if (e?.name === "ValidationError") {
@@ -90,17 +89,12 @@ export default function Notes() {
       <Stack
         direction="row"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="space-between !important"
         sx={{
           px: 2,
           py: 1.5,
           borderRadius: 2,
-          // border: "1px solid rgba(15, 23, 42, 0.08)",
           bgcolor: "background.paper",
-          // boxShadow: "0 18px 60px rgba(2, 6, 23, 0.06)",
-          // background:
-          //   "linear-gradient(180deg, rgba(37, 99, 235, 0.06), rgba(255,255,255,0))",
-          width: "100%",
         }}
       >
         <Box sx={{ minWidth: 0, textAlign: "left" }}>

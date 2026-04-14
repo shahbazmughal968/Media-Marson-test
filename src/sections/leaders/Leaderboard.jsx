@@ -160,7 +160,12 @@ export default function Leaderboard() {
                       </>
                     ) : (
                       <>
-                        <Stack direction="row" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          gap={1}
+                          sx={{ minWidth: 0 }}
+                        >
                           <Typography fontWeight={950} noWrap>
                             {l.name}
                           </Typography>

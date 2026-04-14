@@ -1,4 +1,8 @@
-import { createApi, fetchBaseQuery, BaseQueryFn } from "@reduxjs/toolkit/query/react";
+import {
+  createApi,
+  fetchBaseQuery,
+  BaseQueryFn,
+} from "@reduxjs/toolkit/query/react";
 import type { FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { setAccessToken, logout } from "@/store/authSlice";
 import type { RootState } from "@/store/store";
@@ -15,18 +19,18 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions
-) => {
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
     const refreshResult = await baseQuery(
       { url: "/auth/refresh", method: "POST" },
       api,
-      extraOptions
+      extraOptions,
     );
 
     if (refreshResult.data) {
@@ -48,7 +52,8 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     getUser: builder.query<any, void>({
       query: () => "/user/me",
-      providesTags: (result) => (result ? [{ type: "User", id: "CURRENT" }] : []),
+      providesTags: (result) =>
+        result ? [{ type: "User", id: "CURRENT" }] : [],
     }),
     refreshToken: builder.mutation<{ accessToken: string }, void>({
       query: () => ({ url: "/auth/refresh", method: "POST" }),
@@ -58,14 +63,16 @@ export const apiSlice = createApi({
       void
     >({
       query: () => ({
-        // Public dummy JSON API endpoint (GET)
         url: "https://dummyjson.com/posts?limit=20",
         method: "GET",
       }),
       transformResponse: (resp: any) => resp?.posts ?? [],
       providesTags: (result) =>
         result
-          ? [{ type: "Notes" as const, id: "LIST" }, ...result.map((n) => ({ type: "Notes" as const, id: n.id }))]
+          ? [
+              { type: "Notes" as const, id: "LIST" },
+              ...result.map((n) => ({ type: "Notes" as const, id: n.id })),
+            ]
           : [{ type: "Notes" as const, id: "LIST" }],
     }),
     addNote: builder.mutation<
@@ -73,7 +80,6 @@ export const apiSlice = createApi({
       { title: string; body: string }
     >({
       query: (body) => ({
-        // Public dummy JSON API endpoint (POST)
         url: "https://dummyjson.com/posts/add",
         method: "POST",
         body: { ...body, userId: 1 },

@@ -14,7 +14,7 @@ export default function Home() {
       <Stack
         direction={{ xs: "column", md: "row" }}
         spacing={4}
-        justifyContent="space-between"
+        justifyContent={{ xs: "flex-start", md: "space-between" }}
         alignItems="stretch"
         sx={{ width: "100%" }}
       >
