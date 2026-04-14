@@ -4,10 +4,9 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Avatar,
   Box,
-  Divider,
   Drawer,
-  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
@@ -17,11 +16,13 @@ import {
   Typography,
 } from "@mui/material";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import AutoGraphRoundedIcon from "@mui/icons-material/AutoGraphRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
+import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
+import ArchiveRoundedIcon from "@mui/icons-material/ArchiveRounded";
+import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
+import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
+import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/authSlice";
 
@@ -30,89 +31,96 @@ const DRAWER_MINI = 84;
 
 const navItems = [
   { label: "Dashboard", href: "/", icon: <DashboardRoundedIcon /> },
-  { label: "Practice", href: "/practice", icon: <AutoGraphRoundedIcon /> },
-  { label: "Settings", href: "/settings", icon: <SettingsRoundedIcon /> },
+  { label: "Bacheca annunci", href: "/annunci", icon: <CampaignRoundedIcon /> },
+  { label: "Simulatore", href: "/simulatore", icon: <SmartToyRoundedIcon /> },
+  { label: "Simulazioni archiviate", href: "/archivio", icon: <ArchiveRoundedIcon /> },
+  { label: "Quadernino degli errori", href: "/errori", icon: <BugReportRoundedIcon /> },
+  { label: "Simulazione ufficiale", href: "/ufficiale", icon: <EmojiEventsRoundedIcon /> },
+  { label: "Le mie statistiche", href: "/statistiche", icon: <QueryStatsRoundedIcon /> },
 ];
 
-export default function Sidebar({ collapsed, onToggleCollapsed }) {
+export default function Sidebar({
+  variant = "permanent",
+  open = true,
+  onClose,
+  collapsed,
+  onToggleCollapsed,
+  showCollapseToggle = true,
+}) {
   const pathname = usePathname();
   const dispatch = useDispatch();
 
-  const width = collapsed ? DRAWER_MINI : DRAWER_WIDTH;
+  const width =
+    variant === "permanent"
+      ? collapsed
+        ? DRAWER_MINI
+        : DRAWER_WIDTH
+      : DRAWER_WIDTH;
 
   return (
     <Drawer
-      variant="permanent"
-      open
+      variant={variant}
+      open={open}
+      onClose={onClose}
+      ModalProps={{ keepMounted: true }}
       sx={{
         width,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width,
           boxSizing: "border-box",
-          borderRight: "1px solid rgba(15, 23, 42, 0.08)",
+          borderRight: "0",
           overflowX: "hidden",
-          transition: (t) =>
-            t.transitions.create("width", {
-              easing: t.transitions.easing.sharp,
-              duration: t.transitions.duration.shortest,
-            }),
+          bgcolor: "transparent",
+          transition:
+            variant === "permanent"
+              ? (t) =>
+                  t.transitions.create("width", {
+                    easing: t.transitions.easing.sharp,
+                    duration: t.transitions.duration.shortest,
+                  })
+              : undefined,
         },
       }}
     >
       <Stack
         sx={{
           height: "100%",
-          px: 1.25,
-          pt: 1.25,
-          pb: 1,
+          px: 2,
+          pt: 2,
+          pb: 2,
+          bgcolor: "#0a55c8",
+          background:
+            "linear-gradient(180deg, #0a55c8 0%, #0a52c0 30%, #0a4fb0 100%)",
+          borderTopRightRadius: 6,
+          borderBottomRightRadius: 0,
         }}
-        gap={1}
+        gap={2}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{
-            px: 1.25,
-            py: 1,
-            borderRadius: 3,
-            bgcolor: "rgba(37, 99, 235, 0.08)",
-          }}
-        >
-          <Stack direction="row" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
-            <Box
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: 2.5,
-                background:
-                  "radial-gradient(120% 120% at 30% 20%, #60a5fa 0%, #2563eb 45%, #1d4ed8 100%)",
-                boxShadow: "0 8px 24px rgba(37, 99, 235, 0.25)",
-              }}
-            />
-            {!collapsed && (
-              <Box sx={{ minWidth: 0 }}>
-                <Typography fontWeight={800} noWrap>
-                  Practics
-                </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }} noWrap>
-                  Learn fast, track progress
-                </Typography>
-              </Box>
-            )}
-          </Stack>
-
-          <Tooltip title={collapsed ? "Expand" : "Collapse"} placement="right">
-            <IconButton onClick={onToggleCollapsed} size="small">
-              {collapsed ? <MenuRoundedIcon /> : <MenuOpenRoundedIcon />}
-            </IconButton>
-          </Tooltip>
+        <Stack direction="row" alignItems="center" spacing={1.25} sx={{ px: 1 }}>
+          <Avatar
+            sx={{
+              width: 44,
+              height: 44,
+              bgcolor: "#ffffff",
+              color: "#0a55c8",
+              fontWeight: 1000,
+            }}
+          >
+            L
+          </Avatar>
+          {!collapsed ? (
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 1000, letterSpacing: -0.2, color: "#fff" }}
+              noWrap
+            >
+              Logica
+            </Typography>
+          ) : null}
         </Stack>
 
-        <Divider />
-
-        <List sx={{ px: 0.5 }}>
+        <List sx={{ px: 0.5, color: "#fff" }}>
           {navItems.map((item) => {
             const active =
               item.href === "/"
@@ -126,24 +134,25 @@ export default function Sidebar({ collapsed, onToggleCollapsed }) {
                 href={item.href}
                 selected={!!active}
                 sx={{
-                  mb: 0.5,
-                  borderRadius: 3,
-                  minHeight: 46,
+                  mb: 1,
+                  borderRadius: 3.5,
+                  minHeight: 52,
                   transition: (t) =>
                     t.transitions.create(["background-color", "transform"], {
                       duration: t.transitions.duration.shortest,
                     }),
                   "&:hover": { transform: "translateY(-1px)" },
                   "&.Mui-selected": {
-                    bgcolor: "rgba(37, 99, 235, 0.12)",
-                    "&:hover": { bgcolor: "rgba(37, 99, 235, 0.14)" },
+                    bgcolor: "rgba(2, 6, 23, 0.55)",
+                    "&:hover": { bgcolor: "rgba(2, 6, 23, 0.62)" },
                   },
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 44,
-                    color: active ? "primary.main" : "text.secondary",
+                    color: "#fff",
+                    opacity: active ? 1 : 0.92,
                   }}
                 >
                   {item.icon}
@@ -151,7 +160,10 @@ export default function Sidebar({ collapsed, onToggleCollapsed }) {
                 {!collapsed && (
                   <ListItemText
                     primary={item.label}
-                    primaryTypographyProps={{ fontWeight: active ? 700 : 600 }}
+                    primaryTypographyProps={{
+                      fontWeight: active ? 900 : 700,
+                      sx: { color: "#fff" },
+                    }}
                   />
                 )}
               </ListItemButton>
@@ -169,17 +181,20 @@ export default function Sidebar({ collapsed, onToggleCollapsed }) {
 
         <Box sx={{ flex: 1 }} />
 
-        <Divider />
-
-        <Box sx={{ px: 0.5, pb: 0.75 }}>
-          <Tooltip title="Logout" placement="right" disableHoverListener={!collapsed}>
+        <Box sx={{ px: 0.5 }}>
+          <Tooltip
+            title="Logout"
+            placement="right"
+            disableHoverListener={!collapsed}
+          >
             <ListItemButton
               onClick={() => dispatch(logout())}
               sx={{
-                borderRadius: 3,
-                minHeight: 46,
+                borderRadius: 999,
+                minHeight: 54,
+                bgcolor: "#ffffff",
                 color: "error.main",
-                "&:hover": { bgcolor: "rgba(239, 68, 68, 0.08)" },
+                "&:hover": { bgcolor: "rgba(255,255,255,0.92)" },
               }}
             >
               <ListItemIcon sx={{ minWidth: 44, color: "error.main" }}>
@@ -188,7 +203,7 @@ export default function Sidebar({ collapsed, onToggleCollapsed }) {
               {!collapsed && (
                 <ListItemText
                   primary="Logout"
-                  primaryTypographyProps={{ fontWeight: 700 }}
+                  primaryTypographyProps={{ fontWeight: 900 }}
                 />
               )}
             </ListItemButton>
@@ -198,4 +213,3 @@ export default function Sidebar({ collapsed, onToggleCollapsed }) {
     </Drawer>
   );
 }
-

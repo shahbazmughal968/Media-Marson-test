@@ -26,8 +26,18 @@ import * as yup from "yup";
 import { useAddNoteMutation, useGetNotesQuery } from "@/services/baseAPI";
 
 const schema = yup.object({
-  title: yup.string().trim().min(3, "Title must be at least 3 characters").max(60).required(),
-  body: yup.string().trim().min(10, "Note must be at least 10 characters").max(500).required(),
+  title: yup
+    .string()
+    .trim()
+    .min(3, "Title must be at least 3 characters")
+    .max(60)
+    .required(),
+  body: yup
+    .string()
+    .trim()
+    .min(10, "Note must be at least 10 characters")
+    .max(500)
+    .required(),
 });
 
 function initials(s = "") {
@@ -36,7 +46,8 @@ function initials(s = "") {
 }
 
 export default function Notes() {
-  const { data, isLoading, isError, error, refetch, isFetching } = useGetNotesQuery();
+  const { data, isLoading, isError, error, refetch, isFetching } =
+    useGetNotesQuery();
   const [addNote, addState] = useAddNoteMutation();
 
   const [open, setOpen] = React.useState(false);
@@ -63,19 +74,17 @@ export default function Notes() {
         setFieldErrors(next);
         return;
       }
-      setFieldErrors({ form: e instanceof Error ? e.message : "Failed to create note" });
+      setFieldErrors({
+        form: e instanceof Error ? e.message : "Failed to create note",
+      });
     }
   }
 
   return (
     <Box
       sx={{
-        borderRadius: 4,
-        border: "1px solid rgba(15, 23, 42, 0.08)",
-        bgcolor: "background.paper",
-        boxShadow: "0 18px 60px rgba(2, 6, 23, 0.06)",
-        overflow: "hidden",
         width: "100%",
+        mt: 5,
       }}
     >
       <Stack
@@ -85,44 +94,40 @@ export default function Notes() {
         sx={{
           px: 2,
           py: 1.5,
-          borderBottom: "1px solid rgba(15, 23, 42, 0.06)",
-          background: "linear-gradient(180deg, rgba(37, 99, 235, 0.06), rgba(255,255,255,0))",
+          borderRadius: 2,
+          // border: "1px solid rgba(15, 23, 42, 0.08)",
+          bgcolor: "background.paper",
+          // boxShadow: "0 18px 60px rgba(2, 6, 23, 0.06)",
+          // background:
+          //   "linear-gradient(180deg, rgba(37, 99, 235, 0.06), rgba(255,255,255,0))",
+          width: "100%",
         }}
       >
-        <Box sx={{ minWidth: 0 }}>
+        <Box sx={{ minWidth: 0, textAlign: "left" }}>
           <Typography fontWeight={900} sx={{ letterSpacing: -0.2 }} noWrap>
             Notes
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            Create a note in a modal (POST), then refresh list
-          </Typography>
         </Box>
 
-        <Stack direction="row" alignItems="center" gap={1}>
-          <Chip
-            icon={<NotesRoundedIcon />}
-            label={isLoading ? "Loading…" : `${notes.length} notes`}
-            size="small"
-            sx={{ fontWeight: 900, "& .MuiChip-icon": { color: "primary.main" } }}
-          />
-          <Button
-            variant="contained"
-            startIcon={<AddRoundedIcon />}
-            onClick={() => setOpen(true)}
-            sx={{ borderRadius: 999, fontWeight: 900 }}
-          >
-            Add note
-          </Button>
-        </Stack>
+        <Button
+          variant="contained"
+          startIcon={<AddRoundedIcon />}
+          onClick={() => setOpen(true)}
+          sx={{ borderRadius: 999, fontWeight: 900 }}
+        >
+          Add note
+        </Button>
       </Stack>
 
       <Box
         sx={{
-          maxHeight: 520,
-          overflowY: "auto",
+          overflowX: "auto",
+          overflowY: "hidden",
           p: 1.25,
+          mt: 1.25,
           scrollBehavior: "smooth",
-          "&::-webkit-scrollbar": { width: 10 },
+          scrollSnapType: "x mandatory",
+          "&::-webkit-scrollbar": { height: 10 },
           "&::-webkit-scrollbar-thumb": {
             backgroundColor: "rgba(15, 23, 42, 0.18)",
             borderRadius: 999,
@@ -139,7 +144,15 @@ export default function Notes() {
             </Button>
           </Alert>
         ) : (
-          <Stack gap={1}>
+          <Stack
+            direction="row"
+            gap={2}
+            sx={{
+              alignItems: "stretch",
+              width: "max-content",
+              pr: 0.25,
+            }}
+          >
             {(isLoading ? Array.from({ length: 8 }) : notes).map((n, idx) => (
               <Card
                 key={isLoading ? idx : n.id}
@@ -147,6 +160,9 @@ export default function Notes() {
                 sx={{
                   borderRadius: 3,
                   borderColor: "rgba(15, 23, 42, 0.08)",
+                  width: { xs: 280, sm: 320, md: 360 },
+                  flex: "0 0 auto",
+                  scrollSnapAlign: "start",
                   transition: "transform 140ms ease, box-shadow 140ms ease",
                   "&:hover": {
                     transform: "translateY(-1px)",
@@ -154,11 +170,20 @@ export default function Notes() {
                   },
                 }}
               >
-                <CardContent sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
+                <CardContent
+                  sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}
+                >
                   {isLoading ? (
                     <Skeleton variant="circular" width={44} height={44} />
                   ) : (
-                    <Avatar sx={{ width: 44, height: 44, bgcolor: "primary.main", fontWeight: 900 }}>
+                    <Avatar
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        bgcolor: "primary.main",
+                        fontWeight: 900,
+                      }}
+                    >
                       {initials(n.title)}
                     </Avatar>
                   )}
@@ -174,7 +199,16 @@ export default function Notes() {
                         <Typography fontWeight={950} noWrap>
                           {n.title}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
                           {n.body}
                         </Typography>
                       </>
@@ -216,7 +250,9 @@ export default function Notes() {
             <TextField
               label="Title"
               value={values.title}
-              onChange={(e) => setValues((v) => ({ ...v, title: e.target.value }))}
+              onChange={(e) =>
+                setValues((v) => ({ ...v, title: e.target.value }))
+              }
               error={!!fieldErrors.title}
               helperText={fieldErrors.title || " "}
               fullWidth
@@ -225,7 +261,9 @@ export default function Notes() {
             <TextField
               label="Note"
               value={values.body}
-              onChange={(e) => setValues((v) => ({ ...v, body: e.target.value }))}
+              onChange={(e) =>
+                setValues((v) => ({ ...v, body: e.target.value }))
+              }
               error={!!fieldErrors.body}
               helperText={fieldErrors.body || " "}
               fullWidth
@@ -252,4 +290,3 @@ export default function Notes() {
     </Box>
   );
 }
-

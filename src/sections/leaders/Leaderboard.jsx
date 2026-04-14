@@ -4,9 +4,6 @@ import * as React from "react";
 import {
   Avatar,
   Box,
-  Card,
-  CardActionArea,
-  Chip,
   Rating,
   Skeleton,
   Stack,
@@ -28,276 +25,195 @@ function clamp(n, min, max) {
 export default function Leaderboard() {
   const { leaders, loading, error } = useLeaderboard({ limit: 30 });
 
-  const top = !loading && leaders.length ? leaders[0] : null;
-  const rest = !loading && leaders.length ? leaders.slice(1) : [];
+  const visible = loading ? Array.from({ length: 6 }) : leaders.slice(0, 10);
 
   return (
     <Box
       sx={{
-        borderRadius: 4,
-        border: "1px solid rgba(15, 23, 42, 0.08)",
-        bgcolor: "background.paper",
-        boxShadow: "0 18px 60px rgba(2, 6, 23, 0.06)",
+        borderRadius: 1,
         overflow: "hidden",
         width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        height: { xs: "auto", md: 680 },
+        minHeight: { xs: 0, md: 680 },
+        color: "#fff",
+        background:
+          "radial-gradient(120% 120% at 20% 0%, rgba(14, 165, 233, 0.18) 0%, rgba(2, 132, 199, 0.08) 35%, rgba(2, 6, 23, 0) 70%), linear-gradient(180deg, #0b2a52 0%, #073a7a 40%, #0a4fb0 100%)",
+        boxShadow: "0 24px 80px rgba(2, 6, 23, 0.24)",
       }}
     >
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{
-          px: 2,
-          py: 1.5,
-          borderBottom: "1px solid rgba(15, 23, 42, 0.06)",
-          background:
-            "linear-gradient(180deg, rgba(124, 58, 237, 0.08), rgba(255,255,255,0))",
-        }}
-      >
-        <Box sx={{ minWidth: 0 }}>
-          <Typography fontWeight={900} sx={{ letterSpacing: -0.2 }} noWrap>
-            Leaderboard
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            Ranked by score (API-backed)
+      <Box sx={{ px: { xs: 2, md: 3 }, pt: { xs: 2, md: 2.5 }, pb: 2 }}>
+        <Box
+          sx={{
+            mx: "auto",
+            width: { xs: "100%", sm: "80%" },
+            maxWidth: 520,
+            borderRadius: 1,
+            border: "1px solid rgba(245, 158, 11, 0.85)",
+            bgcolor: "rgba(2, 6, 23, 0.22)",
+            px: 2,
+            py: 1.2,
+            textAlign: "center",
+          }}
+        >
+          <Typography sx={{ fontWeight: 1000, letterSpacing: 3, fontSize: 24 }}>
+            LEADBOARD
           </Typography>
         </Box>
-
-        <Chip
-          icon={<EmojiEventsRoundedIcon />}
-          label={loading ? "Loading…" : `${leaders.length} leaders`}
-          size="small"
-          sx={{
-            fontWeight: 900,
-            "& .MuiChip-icon": { color: "secondary.main" },
-          }}
-        />
-      </Stack>
+      </Box>
 
       {error ? (
-        <Box sx={{ p: 2 }}>
-          <Typography fontWeight={900}>Couldn’t load leaderboard</Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+        <Box sx={{ px: { xs: 2, md: 3 }, pb: 3 }}>
+          <Typography fontWeight={950}>Couldn’t load leaderboard</Typography>
+          <Typography variant="body2" sx={{ opacity: 0.85 }}>
             {error}
           </Typography>
         </Box>
       ) : (
-        <>
-          <Box sx={{ p: 1.25 }}>
-            <Card
-              variant="outlined"
-              sx={{
-                borderRadius: 3.5,
-                borderColor: "rgba(124, 58, 237, 0.18)",
-                bgcolor: "rgba(124, 58, 237, 0.06)",
-                overflow: "hidden",
-              }}
-            >
-              <CardActionArea sx={{ p: 2 }}>
-                <Stack direction="row" alignItems="center" gap={2}>
+        <Box
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            px: { xs: 2, md: 3 },
+            pb: { xs: 2, md: 3 },
+            overflowY: { xs: "visible", md: "auto" },
+            "&::-webkit-scrollbar": { width: 10 },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(255,255,255,0.22)",
+              borderRadius: 999,
+              border: "3px solid transparent",
+              backgroundClip: "content-box",
+            },
+          }}
+        >
+          <Stack spacing={2}>
+            {visible.map((l, idx) => {
+              const rank = loading ? idx + 1 : l.rank;
+              const ring =
+                rank === 1
+                  ? "rgba(250, 204, 21, 0.95)"
+                  : rank === 2
+                    ? "rgba(167, 139, 250, 0.95)"
+                    : "rgba(251, 146, 60, 0.95)";
+
+              return (
+                <Box
+                  key={loading ? idx : l.id}
+                  sx={{
+                    bgcolor: "#ffffff",
+                    color: "rgba(2, 6, 23, 0.92)",
+                    borderRadius: 3,
+                    px: 2,
+                    py: 1.25,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    boxShadow: "0 14px 34px rgba(2, 6, 23, 0.10)",
+                    transition: "transform 140ms ease, box-shadow 140ms ease",
+                    "&:hover": {
+                      transform: "translateY(-1px)",
+                      boxShadow: "0 18px 44px rgba(2, 6, 23, 0.14)",
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "999px",
+                      display: "grid",
+                      placeItems: "center",
+                      border: `1px solid ${ring}`,
+                      fontWeight: 900,
+                      fontSize: 12,
+                      color: "rgba(2, 6, 23, 0.75)",
+                      flex: "0 0 auto",
+                    }}
+                  >
+                    {rank}
+                  </Box>
+
                   {loading ? (
-                    <Skeleton variant="circular" width={56} height={56} />
+                    <Skeleton variant="circular" width={40} height={40} />
                   ) : (
                     <Avatar
-                      src={top?.avatarUrl}
-                      alt={top?.name}
+                      src={l.avatarUrl}
+                      alt={l.name}
                       sx={{
-                        width: 56,
-                        height: 56,
-                        fontWeight: 900,
-                        bgcolor: "secondary.main",
-                        boxShadow: "0 14px 34px rgba(124, 58, 237, 0.25)",
+                        width: 42,
+                        height: 42,
+                        fontWeight: 950,
+                        bgcolor: "#0ea5e9",
+                        border: `3px solid ${ring}`,
                       }}
                     >
-                      {initials(top?.name)}
+                      {initials(l.name)}
                     </Avatar>
                   )}
 
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     {loading ? (
                       <>
-                        <Skeleton width="40%" />
                         <Skeleton width="55%" />
+                        <Skeleton width="35%" />
                       </>
                     ) : (
                       <>
-                        <Stack
-                          direction="row"
-                          alignItems="center"
-                          gap={1}
-                          sx={{ minWidth: 0 }}
-                        >
-                          <Chip
-                            label="#1"
-                            size="small"
-                            sx={{
-                              fontWeight: 900,
-                              bgcolor: "rgba(245, 158, 11, 0.18)",
-                              color: "rgb(180, 83, 9)",
-                            }}
-                          />
+                        <Stack direction="row" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
                           <Typography fontWeight={950} noWrap>
-                            {top?.name}
+                            {l.name}
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: "text.secondary" }}
-                            noWrap
-                          >
-                            @{top?.username}
-                          </Typography>
+
+                          {rank === 1 ? (
+                            <Box
+                              sx={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                                px: 1,
+                                py: 0.25,
+                                borderRadius: 999,
+                                bgcolor: "rgba(239, 68, 68, 0.12)",
+                                color: "rgb(185, 28, 28)",
+                                fontWeight: 950,
+                                fontSize: 10,
+                                flex: "0 0 auto",
+                              }}
+                            >
+                              <EmojiEventsRoundedIcon sx={{ fontSize: 14 }} />
+                              WINNER
+                            </Box>
+                          ) : null}
                         </Stack>
 
-                        <Stack
-                          direction="row"
-                          alignItems="center"
-                          gap={1.25}
-                          sx={{ mt: 0.5 }}
-                        >
-                          <Typography fontWeight={950}>
-                            {top?.score.toLocaleString()} pts
-                          </Typography>
-                          <Rating
-                            value={clamp(top?.stars ?? 0, 0, 5)}
-                            readOnly
-                            size="small"
-                            sx={{
-                              "& .MuiRating-iconFilled": { color: "#f59e0b" },
-                            }}
-                          />
-                        </Stack>
+                        <Rating
+                          value={clamp(l.stars, 0, 5)}
+                          readOnly
+                          size="small"
+                          sx={{
+                            mt: 0.25,
+                            "& .MuiRating-iconFilled": { color: "#f59e0b" },
+                          }}
+                        />
                       </>
                     )}
                   </Box>
-                </Stack>
-              </CardActionArea>
-            </Card>
-          </Box>
 
-          <Box
-            sx={{
-              maxHeight: 520,
-              overflowY: "auto",
-              p: 1.25,
-              pt: 0,
-              scrollBehavior: "smooth",
-              "&::-webkit-scrollbar": { width: 10 },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "rgba(15, 23, 42, 0.18)",
-                borderRadius: 999,
-                border: "3px solid transparent",
-                backgroundClip: "content-box",
-              },
-            }}
-          >
-            <Stack gap={1}>
-              {(loading ? Array.from({ length: 10 }) : rest).map((l, idx) => (
-                <Card
-                  key={loading ? idx : l.id}
-                  variant="outlined"
-                  sx={{
-                    borderRadius: 3,
-                    borderColor: "rgba(15, 23, 42, 0.08)",
-                    overflow: "hidden",
-                    transition: "transform 140ms ease, box-shadow 140ms ease",
-                    "&:hover": {
-                      transform: "translateY(-1px)",
-                      boxShadow: "0 14px 34px rgba(2, 6, 23, 0.08)",
-                    },
-                  }}
-                >
-                  <CardActionArea sx={{ p: 1.5 }}>
-                    <Stack direction="row" alignItems="center" gap={1.5}>
-                      <Box
-                        sx={{
-                          width: 34,
-                          textAlign: "center",
-                          fontWeight: 950,
-                          color: "text.secondary",
-                        }}
-                      >
-                        {loading ? (
-                          <Skeleton width={20} sx={{ mx: "auto" }} />
-                        ) : (
-                          `#${l.rank}`
-                        )}
-                      </Box>
-
-                      {loading ? (
-                        <Skeleton variant="circular" width={44} height={44} />
-                      ) : (
-                        <Avatar
-                          src={l.avatarUrl}
-                          alt={l.name}
-                          sx={{
-                            width: 44,
-                            height: 44,
-                            fontWeight: 900,
-                            bgcolor: "primary.main",
-                          }}
-                        >
-                          {initials(l.name)}
-                        </Avatar>
-                      )}
-
-                      <Box sx={{ flex: 1, minWidth: 0 }}>
-                        {loading ? (
-                          <>
-                            <Skeleton width="45%" />
-                            <Skeleton width="70%" />
-                          </>
-                        ) : (
-                          <>
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              gap={1}
-                              sx={{ minWidth: 0 }}
-                            >
-                              <Typography fontWeight={900} noWrap>
-                                {l.name}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                sx={{ color: "text.secondary" }}
-                                noWrap
-                              >
-                                @{l.username}
-                              </Typography>
-                            </Stack>
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              gap={1.25}
-                              sx={{ mt: 0.35 }}
-                            >
-                              <Typography
-                                fontWeight={900}
-                                sx={{ letterSpacing: -0.1 }}
-                              >
-                                {l.score.toLocaleString()} pts
-                              </Typography>
-                              <Rating
-                                value={clamp(l.stars, 0, 5)}
-                                readOnly
-                                size="small"
-                                sx={{
-                                  "& .MuiRating-iconFilled": {
-                                    color: "#f59e0b",
-                                  },
-                                }}
-                              />
-                            </Stack>
-                          </>
-                        )}
-                      </Box>
-                    </Stack>
-                  </CardActionArea>
-                </Card>
-              ))}
-            </Stack>
-          </Box>
-        </>
+                  <Box sx={{ textAlign: "right", minWidth: 64 }}>
+                    {loading ? (
+                      <Skeleton width={46} />
+                    ) : (
+                      <Typography fontWeight={950} sx={{ color: "#f59e0b" }}>
+                        {l.score}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              );
+            })}
+          </Stack>
+        </Box>
       )}
     </Box>
   );
